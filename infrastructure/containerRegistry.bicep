@@ -1,5 +1,6 @@
-param containerRegistryname string = 'acr-tst-ae'
+param containerRegistryname string = 'acrtstae'
 param location string
+param userManagedIdentityId string
 
 resource containerRegistry 'Microsoft.ContainerRegistry/registries@2021-06-01-preview' = {
   name: containerRegistryname
@@ -9,7 +10,13 @@ resource containerRegistry 'Microsoft.ContainerRegistry/registries@2021-06-01-pr
   }
   properties: {
     adminUserEnabled: true
-    anonymousPullEnabled: true
     publicNetworkAccess: 'Enabled'
+  }
+
+  identity: {
+    type: 'SystemAssigned, UserAssigned'
+    userAssignedIdentities: {
+      '${userManagedIdentityId}': {}
+    }
   }
 }
