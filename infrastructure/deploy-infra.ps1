@@ -4,6 +4,7 @@ param (
     [string]
     $ResourceGroup="ContainerAppTest"
 )
+$ErrorActionPreference = 'Stop'
 
 $expiresTagValue = (get-date).AddDays(5).ToString('yyyy-MM-dd')
 
