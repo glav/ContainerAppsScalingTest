@@ -1,9 +1,8 @@
 param containerAppResourceName string = 'ca-test-ae'
-param solution_name string = 'testsolution'
-param containerRegistryName string = 'acr-tst-ae'
-param imageTag string = ''
-param appPort int = 80
-param imageName string = 'catestae'
+param containerRegistryName string = 'acrtstae'
+param imageTag string = 'v1'
+param appPort int = 5153
+param imageName string = 'testcontainerapp'
 param containerAppEnvironmentName string = 'cae-test-ae'
 param managedIdentityName string = 'testmanagedidentity'
 param location string = resourceGroup().location
@@ -76,7 +75,7 @@ resource resourceContainerApp 'Microsoft.App/containerApps@2022-06-01-preview' =
     template: {
       containers: [
         {
-          image: '${resource_containerRegistry.properties.loginServer}/${solution_name}/${imageName}:${imageTag}'
+          image: '${resource_containerRegistry.properties.loginServer}/${imageName}:${imageTag}'
           name: imageName
           env: env
           resources: app_resource
