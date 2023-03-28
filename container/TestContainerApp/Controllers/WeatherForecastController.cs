@@ -6,9 +6,9 @@ namespace TestContainerApp.Controllers
     [Route("[controller]")]
     public class SomeApiCallController : ControllerBase
     {
-        private const string _apiVersion = "v1";
+        private const string _apiVersion = "v3";
             private readonly ILogger<SomeApiCallController> _logger;
-        const int _delayCount = 10;
+        const int _delayCount = 20;
 
         public SomeApiCallController(ILogger<SomeApiCallController> logger)
         {
@@ -19,14 +19,17 @@ namespace TestContainerApp.Controllers
         public ApiResultModel Get()
         {
             Console.WriteLine("Received request: {0}", DateTime.UtcNow.ToString("yyyy-MM-dd hh:mm:ss"));
+            int waitCount = 0;
             for (var i=0; i < _delayCount; i++)
             {
+                waitCount++;
                 // Execute a tight loop for CPU usage
             }
             return new ApiResultModel
             {
                 DateTime = DateTime.UtcNow,
-                Version = _apiVersion
+                Version = _apiVersion,
+                WaitCountInTicks = waitCount
             };
         }
     }

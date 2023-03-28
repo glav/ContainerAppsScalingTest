@@ -8,6 +8,7 @@ param managedIdentityName string = 'testmanagedidentity'
 param location string = resourceGroup().location
 param appInsightsName string = 'appi-test-for-cae'
 param environment_variables array = []
+param maxReplicas int = 1
 
 // @secure()
 // param app_insights_connectionstring string
@@ -30,7 +31,7 @@ param app_resource object = {
 }
 param app_scale object = {
   minReplicas: 1
-  maxReplicas: 1
+  maxReplicas: maxReplicas
 }
 
 resource resourceAppInsights 'Microsoft.Insights/components@2020-02-02' existing = {
@@ -85,9 +86,32 @@ resource resourceContainerApp 'Microsoft.App/containerApps@2022-06-01-preview' =
           name: imageName
           env: env
           resources: app_resource
+          probes: [
+            {
+              type: 'Readiness'
+              tcpSocket: {
+                port: appPort
+              }
+              initialDelaySeconds: 3
+              periodSeconds: 10
+            }
+          ]
         }
       ]
-      scale: app_scale
+      scale: {
+        minReplicas: 1
+        maxReplicas: maxReplicas
+        rules: [
+          {
+            name: 'concurrentrequestsrule'
+            http: {
+              metadata: {
+                concurrentRequests: '10'
+              }
+            }
+          }
+        ]
+      }
     }
   }
 }

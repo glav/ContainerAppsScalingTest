@@ -7,5 +7,7 @@ namespace TestContainerApp
         public string? Summary { get; set; }
 
         public string Version { get; set; }
+
+        public int WaitCountInTicks { get; set; }
     }
 }
