@@ -1,19 +1,20 @@
 param containerAppResourceName string = 'ca-test-ae'
 param containerRegistryName string = 'acrtstae'
 param imageTag string = 'v1'
-param appPort int = 5153
+param appPort int = 5000
 param imageName string = 'testcontainerapp'
 param containerAppEnvironmentName string = 'cae-test-ae'
 param managedIdentityName string = 'testmanagedidentity'
 param location string = resourceGroup().location
+param appInsightsName string = 'appi-test-for-cae'
 param environment_variables array = []
 
-@secure()
-param app_insights_connectionstring string
+// @secure()
+// param app_insights_connectionstring string
 
 var default_env = [ {
     name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
-    value: app_insights_connectionstring
+    value: resourceAppInsights.properties.ConnectionString // app_insights_connectionstring
   }
   // {
   //   name: 'AzureSettings__UserAssignedClientId'
@@ -30,6 +31,10 @@ param app_resource object = {
 param app_scale object = {
   minReplicas: 1
   maxReplicas: 1
+}
+
+resource resourceAppInsights 'Microsoft.Insights/components@2020-02-02' existing = {
+  name: appInsightsName
 }
 
 resource resourceContainerAppEnv 'Microsoft.App/managedEnvironments@2022-03-01' existing = {
@@ -69,6 +74,7 @@ resource resourceContainerApp 'Microsoft.App/containerApps@2022-06-01-preview' =
       registries: [
         {
           server: resource_containerRegistry.properties.loginServer
+          identity: resource_managedIdentity.id
         }
       ]
     }

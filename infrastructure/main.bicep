@@ -26,6 +26,5 @@ module modContainerRegistry 'containerRegistry.bicep' = {
   name: 'containerregistry'
   params: {
     location: location
-    userManagedIdentityId: resourceManagedIdentity.id
   }
 }
